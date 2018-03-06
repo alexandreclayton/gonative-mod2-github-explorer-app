@@ -8,7 +8,7 @@ import {
   StatusBar,
 } from 'react-native';
 import PropTypes from 'prop-types';
-
+import api from 'services/api';
 import styles from './styles';
 
 // StatusBar.setBarStyle("light-content");
@@ -24,14 +24,31 @@ export default class Welcome extends Component {
     }).isRequired,
   };
 
-  singIn = () => {
-    const resetAction = NavigationActions.reset({
-      index: 0,
-      actions: [
-        NavigationActions.navigate({ routeName: 'User' }),
-      ],
-    });
-    this.props.navigation.dispatch(resetAction);
+  state = {
+    username: '',
+  }
+
+  checkUserExists = async (username) => {
+    const user = await api.get(`/users/${username}`);
+    return user;
+  }
+
+  singIn = async () => {
+    const { username } = this.state;
+    if (username.length === 0) return;
+    try {
+      await this.checkUserExists(username);
+      const resetAction = NavigationActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({ routeName: 'User' }),
+        ],
+      });
+      this.props.navigation.dispatch(resetAction);
+    } catch (err) {
+      // err
+      console.log(err);
+    }
   };
 
   render() {
@@ -49,6 +66,7 @@ export default class Welcome extends Component {
             autoCorrect={false}
             placeholder="Digite seu usuário"
             underlineColorAndroid="rgba(0,0,0,0)"
+            onChangeText={username => this.setState({ username })}
           />
           <TouchableOpacity style={styles.button} onPress={this.singIn} >
             <Text style={styles.buttonText}>Prossegir</Text>
