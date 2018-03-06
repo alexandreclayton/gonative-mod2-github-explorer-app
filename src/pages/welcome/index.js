@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StatusBar,
   ActivityIndicator,
+  AsyncStorage,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import api from 'services/api';
@@ -37,12 +38,17 @@ export default class Welcome extends Component {
     return user;
   }
 
+  saveUser = async (username) => {
+    await AsyncStorage.setItem('@Github:username', username);
+  }
+
   singIn = async () => {
     const { username } = this.state;
     if (username.length === 0) return;
     this.setState({ loading: true });
     try {
       await this.checkUserExists(username);
+      await this.saveUser(username);
       const resetAction = NavigationActions.reset({
         index: 0,
         actions: [
@@ -64,7 +70,7 @@ export default class Welcome extends Component {
         <Text style={styles.text}>
           Para continuar, precisamos que você informe seu usuário do Github
         </Text>
-        { !!this.state.errorMessage && <Text style={styles.error}>{this.state.errorMessage}</Text>}
+        {!!this.state.errorMessage && <Text style={styles.error}>{this.state.errorMessage}</Text>}
         <View style={styles.form}>
           <TextInput
             style={styles.input}
