@@ -1,9 +1,13 @@
+import React from 'react';
 import { StackNavigator, TabNavigator } from 'react-navigation';
-
+// Pages
 import Welcome from 'pages/welcome';
 import Repositories from 'pages/repositories';
 import Organizations from 'pages/organizations';
-
+// Components
+import HeaderRight from 'components/HeaderRight';
+// Styles
+import { metrics } from 'styles';
 
 const createNavigator = (isLogged = false) =>
   StackNavigator({
@@ -14,6 +18,14 @@ const createNavigator = (isLogged = false) =>
         Organizations: { screen: Organizations },
       }),
     },
-  }, { initialRouteName: isLogged ? 'User' : 'Welcome' });
+  }, {
+    initialRouteName: isLogged ? 'User' : 'Welcome',
+    navigationOptions: {
+      headerStyle: {
+        paddingHorizontal: metrics.basePadding,
+      },
+      headerRight: <HeaderRight />,
+    },
+  });
 
 export default createNavigator;
