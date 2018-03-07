@@ -20,6 +20,7 @@ export default class Organizations extends Component {
   state = {
     data: [],
     loading: true,
+    refreshing: false,
   }
 
   async componentDidMount() {
@@ -41,6 +42,8 @@ export default class Organizations extends Component {
       renderItem={this.renderListItem}
       numColumns={2}
       columnWrapperStyle={styles.columnContainer}
+      onRefresh={this.loadOrganizations}
+      refreshing={this.state.refreshing}
     />
   );
 
